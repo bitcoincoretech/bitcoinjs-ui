@@ -3,7 +3,7 @@ const paymentComponent = function () {
     const types = {
         p2ms: 'multisig',
         nonstandard: 'nonstandard',
-        embeded: 'nulldata',
+        embed: 'nulldata',
         p2pk: 'pubkey',
         p2pkh: 'pubkeyhash',
         p2sh: 'scripthash',
