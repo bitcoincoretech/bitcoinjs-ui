@@ -253,7 +253,7 @@ const paymentComponent = function () {
                 </div>
             </div>
         `;
-        $(`#witness-list-${containerUUID}`).prepend(witnessHtml);
+        $(`#witness-list-${containerUUID}`).append(witnessHtml);
     }
 
     function removePublicKey(containerUUID, publicKeyContainerUUID) {

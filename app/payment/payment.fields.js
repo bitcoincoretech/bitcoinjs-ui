@@ -123,8 +123,22 @@ const PAYMENT_FIELDS = {
                     name: 'output',
                     label: 'Output',
                     type: 'asm'
+                },
+                {
+                    name: 'witness',
+                    label: 'Witness',
+                    type: 'hex',
+                    isList: true,
+                    txLocation: 'ins'
                 }
             ]
+        },
+        {
+            name: 'witness',
+            label: 'Witness',
+            type: 'hex',
+            isList: true,
+            txLocation: 'ins'
         }
     ],
     p2ms: [{

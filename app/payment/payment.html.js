@@ -626,8 +626,9 @@ paymentComponent.htmlToData = function htmlToData(containerUUID) {
         if (!keyUUID) {
             return;
         }
-        data.witness = data.witness || [];
-        data.witness.push(($(`#witness-${keyUUID}`).val() || '').trim());
+        data.redeem = data.redeem || {};
+        data.redeem.witness = data.redeem.witness || [];
+        data.redeem.witness.push(($(`#witness-${keyUUID}`).val() || '').trim());
     });
 
     $(`.witness-entry-${containerUUID}`).each(function () {
