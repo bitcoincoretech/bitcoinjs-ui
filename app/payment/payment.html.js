@@ -259,25 +259,29 @@ paymentComponent.createNew = function createNew(op) {
                             </div>
                         </td>
                     </tr>
-                    <tr id="data-${op.containerUUID}Row" class="d-flex ${op.containerUUID}Row"">
+
+                    <tr id="data-${op.containerUUID}Row" class="d-flex ${op.containerUUID}Row">
                         <td class="col-sm-2"> <label>Data</label> </td>
                         <td class="col-sm-5">
-                            <div id="data-${op.containerUUID}">
+                            <div class="row">
+                                <div class="col-sm-12 mb-2">
+                                    <button id="data-${op.containerUUID}Add" onclick="paymentComponent.addNewDataEntry('${op.containerUUID}')" type="button"
+                                        class="btn btn-info btn-sm float-right button120 read-only-hide-${op.containerUUID}">
+                                        Add Data
+                                    </button>
+                                </div>
                             </div>
-                            <div>
-                                <button id="data-${op.containerUUID}Add" onclick="addItemToDataList('data-${op.containerUUID}')" type="button" 
-                                    class="btn btn-info btn-sm btn-sm float-right read-only-hide-${op.containerUUID}">
-                                    Add Data
-                                </button>
+                            <div id="data-list-${op.containerUUID}">
                             </div>
                         </td>
                         <td class="col-sm-5">
-                            <div>                        
-                                <span id="data-${op.containerUUID}-expect" class="asm break-long-words"></span>
-                                <input hidden id="data-${op.containerUUID}-expect-value">
+                            <div>
+                                <span id="data-entry-${op.containerUUID}-expect" class="asm break-long-words"></span>
+                                <input hidden id="data-entry-${op.containerUUID}-expect-value">
                             </div>
                         </td>
                     </tr>
+
                     <tr id="redeem-${op.containerUUID}Row" class="thead-light ${op.containerUUID}Row">
                         <td colspan="3" class="w-100">
                             <table class="table table-sm ml-3 shadow p-4 mb-4 border-left border-bottom w-95">
@@ -453,6 +457,14 @@ paymentComponent.dataToHtml = function dataToHtml(containerUUID, data = {}, upda
     $(`#m-${containerUUID}-expect-value`).val(data.m || '');
     updateProvidedValues ? $(`#m-${containerUUID}`).val(data.m || '') : null;
 
+    const dataListHex = (data.data || []).map(v => v.toString('hex'));
+    $(`#data-entry-${containerUUID}-expect`).html(asmToHtml(dataListHex));
+    $(`#data-entry-${containerUUID}-expect-value`).val(dataListHex.join(' '));
+    updateProvidedValues ? (dataListHex || []).forEach(v => {
+        paymentComponent.addNewDataEntry(containerUUID, v);
+    }) : null;
+
+
     const signaturesHex = (data.signatures || []).map(v => v.toString('hex'));
     $(`#signatures-${containerUUID}-expect`).html(asmToHtml(signaturesHex));
     $(`#signatures-${containerUUID}-expect-value`).val(signaturesHex.join(' '));
@@ -578,6 +590,15 @@ paymentComponent.htmlToData = function htmlToData(containerUUID) {
             signature: ($(`#signature-${keyUUID}`).val() || '').trim(),
             publicKey: ($(`#signature-public-key-${keyUUID}`).text() || '').trim()
         });
+    });
+
+    $(`.data-entry-${containerUUID}`).each(function () {
+        const dataEntryUUID = this.id.split("data-entry-container-")[1];
+        if (!dataEntryUUID) {
+            return;
+        }
+        data.data = data.data || [];
+        data.data.push(($(`#data-entry-${dataEntryUUID}`).val() || '').trim());
     });
 
     if ($(`#input-${containerUUID}`).val()) {

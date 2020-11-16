@@ -214,6 +214,27 @@ const paymentComponent = function () {
         $(`#signature-list-${containerUUID}`).append(signatureHtml);
     }
 
+    function addNewDataEntry(containerUUID, data = '') {
+        const dataEntryContainerUUID = uuidv4();
+        const dataHtml = `
+            <div id="data-entry-container-${dataEntryContainerUUID}" class="mb-2 data-entry-${containerUUID}">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">hex</span>
+                    </div>
+                    <textarea id="data-entry-${dataEntryContainerUUID}" rows="2" class="form-control asm read-only-disable-${dataEntryContainerUUID}">${data.signature || ''}</textarea>
+                    <div class="input-group-append">
+                        <button onclick="paymentComponent.removeDataEntry('${dataEntryContainerUUID}')"
+                            class="btn btn-info btn-danger">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        $(`#data-list-${containerUUID}`).append(dataHtml);
+    }
+
     function addNewWitnessData(containerUUID, data = '') {
         const witnessContainerUUID = uuidv4();
         const witnessHtml = `
@@ -243,6 +264,10 @@ const paymentComponent = function () {
 
     function removeSignature(containerUUID) {
         $(`#signature-entry-container-${containerUUID}`).remove();
+    }
+
+    function removeDataEntry(containerUUID) {
+        $(`#data-entry-container-${containerUUID}`).remove();
     }
 
     function removeWitnessData(containerUUID) {
@@ -419,9 +444,11 @@ const paymentComponent = function () {
         addNewPublicKey,
         addNewSignature,
         addNewWitnessData,
+        addNewDataEntry,
         removePublicKey,
         removeSignature,
         removeWitnessData,
+        removeDataEntry,
         wrappScript,
         unwrapScript,
         clear
