@@ -143,11 +143,12 @@ transactionInputComponent.createNew = function createNew(op) {
                         <td class="col-sm-10">
                             <div class="row"> 
                                 <div class="col-sm-12">
+                                    <span id="coinbase-data-${op.inputUUID}" class="badge badge-secondary d-none"></span>
                                     <table id="ins-script-sig-container-${op.inputUUID}" class="table table-sm shadow">
                                         <thead>
                                             <tr class="d-flex small thead-light">
                                                 <th class="col-sm-6">
-                                                    <span id="script-type-label-${op.inputUUID}" class="badge badge-secondary mr-3">nonstandard</span>
+                                                    <span id="script-type-label-${op.inputUUID}" class="badge badge-secondary mr-3"></span>
                                                     <span>Unlock Script</span>
                                                 </th>
                                                 
@@ -172,7 +173,7 @@ transactionInputComponent.createNew = function createNew(op) {
                                         <thead class="thead-light">
                                             <tr class="d-flex small">
                                                 <th class="col-sm-12">
-                                                    <span id="redeem-script-type-label-${op.inputUUID}" class="badge badge-secondary mr-3">nonstandard</span>
+                                                    <span id="redeem-script-type-label-${op.inputUUID}" class="badge badge-secondary mr-3"></span>
                                                     <span>Redeem Script</span>
                                                     <i onclick="transactionInputComponent.openRedeemScriptModal('${op.inputUUID}')"
                                                         class="far fa-edit fa-lg text-info float-right mr-3 pt-1 pointer read-only-hide-${op.inputUUID} "
@@ -194,7 +195,7 @@ transactionInputComponent.createNew = function createNew(op) {
                                         <thead class="thead-light">
                                             <tr class="d-flex small">
                                                 <th class="col-sm-12">
-                                                    <span id="witness-script-type-label-${op.inputUUID}" class="badge badge-secondary mr-3">nonstandard</span>
+                                                    <span id="witness-script-type-label-${op.inputUUID}" class="badge badge-secondary mr-3"></span>
                                                     <span>Witness Script</span>
                                                 </th>
                                             </tr>
@@ -237,6 +238,7 @@ transactionInputComponent.dataToHtml = function dataToHtml(inputUUID, inputData)
     }
 
     const previousTxId = inputData.hash ? reverseBuffer(inputData.hash).toString('hex') : '';
+    const isCoinbaseInput = previousTxId === '0000000000000000000000000000000000000000000000000000000000000000';
     $(`#ins-id-${inputUUID}`).val(previousTxId);
 
     $(`#ins-index-${inputUUID}`).val(inputData.index || 0);
@@ -279,20 +281,32 @@ transactionInputComponent.dataToHtml = function dataToHtml(inputUUID, inputData)
         delete inputData.redeemScript;
         delete inputData.redeemScriptType;
     }
-    
+
     const utxoScriptType = utxo.scriptType + (utxo.redeemScriptType ? `-${utxo.redeemScriptType}` : '');
     $(`#utxo-script-type-label-${inputUUID}`).text(utxoScriptType || '');
 
 
-    const scriptSigAsm = (inputData.script && inputData.script.length) ? bitcoinjs.script.toASM(inputData.script) : '';
-    $(`#ins-script-sig-${inputUUID}`).html(scriptSigAsm ? asmToHtml(scriptSigAsm.split(' ')) : '');
-    $(`#ins-script-sig-asm-${inputUUID}`).text(scriptSigAsm);
-
-    if (scriptSigAsm) {
-        $(`#script-type-label-${inputUUID}`).text(paymentComponent.classifyInput(inputData.script));
+    if (isCoinbaseInput) {
+        const coinbaseData = (inputData.script && inputData.script.length) ? inputData.script.toString('hex') : '';
+        $(`#coinbase-data-${inputUUID}`).text(coinbaseData);
+        $(`#coinbase-data-${inputUUID}`).removeClass('d-none');
+        $(`#ins-script-sig-container-${inputUUID}`).addClass('d-none');
     } else {
-        $(`#script-type-label-${inputUUID}`).text(inputData.scriptType);
+        const scriptSigAsm = (inputData.script && inputData.script.length) ? bitcoinjs.script.toASM(inputData.script) : '';
+        $(`#ins-script-sig-${inputUUID}`).html(scriptSigAsm ? asmToHtml(scriptSigAsm.split(' ')) : '');
+        $(`#ins-script-sig-asm-${inputUUID}`).text(scriptSigAsm);
+        $(`#ins-script-sig-container-${inputUUID}`).removeClass('d-none');
+        $(`#coinbase-data-${inputUUID}`).addClass('d-none');
+
+        if (scriptSigAsm) {
+            $(`#script-type-label-${inputUUID}`).text(paymentComponent.classifyInput(inputData.script));
+        } else {
+            $(`#script-type-label-${inputUUID}`).text(inputData.scriptType);
+        }
     }
+
+
+
 
     const redeemScriptAsm = (inputData.redeemScript && inputData.redeemScript.length) ? bitcoinjs.script.toASM(inputData.redeemScript) : '';
 
@@ -323,9 +337,9 @@ transactionInputComponent.dataToHtml = function dataToHtml(inputUUID, inputData)
 
 
     $(`#ins-witness-${inputUUID}`).empty();
-    $(`#ins-witness-type-${inputUUID}`).text('nonstandard');
+    $(`#ins-witness-type-${inputUUID}`).text('');
     if (inputData.witness && inputData.witness.length) {
-        const witnessType = paymentComponent.classifyWitnees(inputData.witness);
+        const witnessType = paymentComponent.classifyWitness(inputData.witness);
         $(`#ins-witness-type-${inputUUID}`).text(witnessType);
         const witnessHex = (inputData.witness || []).map(v => v.toString('hex'));
         $(`#ins-witness-${inputUUID}`).html(asmToHtml(witnessHex));
@@ -401,7 +415,7 @@ transactionInputComponent.htmlToData = function htmlToData(inputUUID) {
     const redeemScriptAsm = $(`#ins-redeem-script-asm-${inputUUID}`).text() || '';
     if (redeemScriptAsm) {
         inputData.redeemScript = bitcoinjs.script.fromASM(redeemScriptAsm);
-        inputData.redeemScriptType = $(`#redeem-script-type-label-${inputUUID}`).text() || 'nonstandard';
+        inputData.redeemScriptType = $(`#redeem-script-type-label-${inputUUID}`).text() || '';
     }
 
     const witnessScriptAsm = $(`#ins-witness-script-asm-${inputUUID}`).text() || '';

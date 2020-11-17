@@ -127,7 +127,7 @@ transactionOutputComponent.dataToHtml = function dataToHtml(outputUUID, output) 
     const scriptType = paymentComponent.classifyOutput(output.script);
     $(`#outs-script-type-${outputUUID}`).text(scriptType || '');
 
-    if (!output.address && scriptType !== 'nonstandard') {
+    if (!output.address && scriptType && scriptType !== 'nonstandard') {
         try {
             const outputPaymentData = bitcoinjs.payments[scriptType]({
                 output: output.script,
@@ -184,7 +184,7 @@ transactionOutputComponent.htmlToData = function htmlToData(outputUUID) {
     if (scriptAsm) {
         outputData.script = bitcoinjs.script.fromASM(scriptAsm);
     }
-    outputData.scriptType = $(`#outs-script-type-${outputUUID}`).text() || 'nonstandard';
+    outputData.scriptType = $(`#outs-script-type-${outputUUID}`).text() || '';
 
     const redeemScriptAsm = $(`#outs-redeem-script-asm-${outputUUID}`).text() || '';
     if (redeemScriptAsm) {
