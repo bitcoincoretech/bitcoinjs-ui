@@ -26,7 +26,7 @@ const transactionInputComponent = function () {
                     inputData.script = payment.input;
                     inputData.witness = payment.witness;
                     inputData.redeemScript = payment.redeem && payment.redeem.output;
-
+                    inputData.scriptType = payment.paymentType;
                 }
             }
             const paymentData = paymentComponent.htmlToData(paymentContainerUUID);

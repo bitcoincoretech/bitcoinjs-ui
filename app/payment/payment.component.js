@@ -404,7 +404,7 @@ const paymentComponent = function () {
             } else if (payment.input && payment.input.length) {
                 payment.paymentType = classifyInput(bitcoinjs.script.fromASM(payment.input));
             } else if (payment.witness && payment.witness.length) {
-                payment.paymentType = classifyWitness(bitcoinjs.script.fromASM(payment.witness));
+                payment.paymentType = classifyWitness(bitcoinjs.script.fromASM(payment.witness.join(' ')));
             }
         }
         const dataFields = PAYMENT_FIELDS[payment.paymentType];

@@ -509,7 +509,7 @@ paymentComponent.dataToHtml = function dataToHtml(containerUUID, data = {}, upda
         const witnessHex = (data.redeem.witness || []).map(v => v.toString('hex'));
         $(`#redeem-witness-${containerUUID}-expect`).html(asmToHtml(witnessHex));
         $(`#redeem-witness-${containerUUID}-expect-value`).val(witnessHex.join(' '));
-        updateProvidedValues ? witnessHex.forEach(w => paymentComponent.addNewWitnessDat(`redeem-${containerUUID}`, w)) : null;
+        updateProvidedValues ? witnessHex.forEach(w => paymentComponent.addNewWitnessData(`redeem-${containerUUID}`, w)) : null;
     }
 
     $(`#witness-script-value-${containerUUID}`).val(data.witnessScript || '');
@@ -529,7 +529,7 @@ paymentComponent.dataToHtml = function dataToHtml(containerUUID, data = {}, upda
     const witnessHex = (data.witness || []).map(v => v.toString('hex'));
     $(`#witness-${containerUUID}-expect`).html(asmToHtml(witnessHex));
     $(`#witness-${containerUUID}-expect-value`).val(witnessHex.join(' '));
-    updateProvidedValues ? witnessHex.forEach(w => paymentComponent.addNewWitnessDat(containerUUID, w)) : null;
+    updateProvidedValues ? witnessHex.forEach(w => paymentComponent.addNewWitnessData(containerUUID, w)) : null;
 }
 
 paymentComponent.htmlToData = function htmlToData(containerUUID) {

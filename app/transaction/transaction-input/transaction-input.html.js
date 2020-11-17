@@ -305,9 +305,6 @@ transactionInputComponent.dataToHtml = function dataToHtml(inputUUID, inputData)
         }
     }
 
-
-
-
     const redeemScriptAsm = (inputData.redeemScript && inputData.redeemScript.length) ? bitcoinjs.script.toASM(inputData.redeemScript) : '';
 
     if (redeemScriptAsm) {
@@ -428,10 +425,7 @@ transactionInputComponent.htmlToData = function htmlToData(inputUUID) {
     inputData.witnessType = $(`#ins-witness-type-${inputUUID}`).text();
 
 
-    const witness = [];
-    $(`.list-item-ins-witness-${inputUUID}`).each(function () {
-        witness.push(this.value);
-    });
+    const witness = ($(`#ins-witness-value-${inputUUID}`).val() || '').split(' ');
     if (witness.length) {
         inputData.witness = witness;
     }
