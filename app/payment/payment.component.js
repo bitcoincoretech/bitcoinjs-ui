@@ -274,7 +274,6 @@ const paymentComponent = function () {
         $(`#witness-entry-container-${containerUUID}`).remove();
     }
 
-
     function wrappScript(containerUUID, wrapperType = 'p2sh') {
         try {
             const outputScript = ($(`#output-${containerUUID}-expect-value`).val() || '').trim();
@@ -342,7 +341,7 @@ const paymentComponent = function () {
         return _paymentTypeFromScriptType(scriptType);
     }
 
-    function classifyWitnees(script) {
+    function classifyWitness(script) {
         const scriptType = (script && script.length) ? classifyScript.witness(script) : 'nonstandard';
         return _paymentTypeFromScriptType(scriptType);
     }
@@ -435,7 +434,7 @@ const paymentComponent = function () {
         checkPayment,
         classifyInput,
         classifyOutput,
-        classifyWitnees,
+        classifyWitness,
         fromTxInput,
         fromTxOutput,
         updateComputedValues,
