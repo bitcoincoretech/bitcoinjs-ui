@@ -342,7 +342,7 @@ transactionInputComponent.dataToHtml = function dataToHtml(inputUUID, inputData)
         $(`#ins-witness-type-${inputUUID}`).text(witnessType);
         const witnessHex = (inputData.witness || []).map(v => v.toString('hex'));
         $(`#ins-witness-${inputUUID}`).html(asmToHtml(witnessHex));
-        $(`#ins-witness-value-${inputUUID}`).val(witnessHex.join(' '));
+        $(`#ins-witness-value-${inputUUID}`).val(JSON.stringify(witnessHex));
     }
 
     $(`#public-keys-list-${inputUUID}`).val(JSON.stringify(inputData.publicKeysList || []));
@@ -427,9 +427,10 @@ transactionInputComponent.htmlToData = function htmlToData(inputUUID) {
     inputData.witnessType = $(`#ins-witness-type-${inputUUID}`).text();
 
 
-    const witness = ($(`#ins-witness-value-${inputUUID}`).val() || '').split(' ');
+
+    const witness = $(`#ins-witness-value-${inputUUID}`).val() || '';
     if (witness.length) {
-        inputData.witness = witness;
+        inputData.witness = JSON.parse(witness);
     }
 
     const publicKeysList = $(`#public-keys-list-${inputUUID}`).val() || '';
