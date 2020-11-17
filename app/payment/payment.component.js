@@ -12,7 +12,9 @@ const paymentComponent = function () {
     };
 
     function fromTxInput(containerUUID, inputData) {
-        const scriptType = inputData.scriptType === 'nonstandard' ? (inputData.witnessType || 'nonstandard') : inputData.scriptType;
+        const scriptType = (!inputData.scriptType || inputData.scriptType === 'nonstandard') ?
+            (inputData.witnessType || 'nonstandard') :
+            inputData.scriptType;
         paymentComponent.changePaymentType(containerUUID, scriptType, 'ins');
 
         const paymentData = {
@@ -332,18 +334,33 @@ const paymentComponent = function () {
     }
 
     function classifyInput(script) {
-        const scriptType = (script && script.length) ? classifyScript.input(script) : 'nonstandard';
-        return _paymentTypeFromScriptType(scriptType);
+        try {
+            const scriptType = (script && script.length) ? classifyScript.input(script) : 'nonstandard';
+            return _paymentTypeFromScriptType(scriptType);
+        } catch (err) {
+            console.warn(err);
+        }
+        return 'nonstandard';
     }
 
     function classifyOutput(script) {
-        const scriptType = (script && script.length) ? classifyScript.output(script) : 'nonstandard';
-        return _paymentTypeFromScriptType(scriptType);
+        try {
+            const scriptType = (script && script.length) ? classifyScript.output(script) : 'nonstandard';
+            return _paymentTypeFromScriptType(scriptType);
+        } catch (err) {
+            console.warn(err);
+        }
+        return 'nonstandard';
     }
 
     function classifyWitness(script) {
-        const scriptType = (script && script.length) ? classifyScript.witness(script) : 'nonstandard';
-        return _paymentTypeFromScriptType(scriptType);
+        try {
+            const scriptType = (script && script.length) ? classifyScript.witness(script) : 'nonstandard';
+            return _paymentTypeFromScriptType(scriptType);
+        } catch (err) {
+            console.warn(err);
+        }
+        return 'nonstandard';
     }
 
     function _createNewPublicKey(containerUUID, publicKeyContainerUUID, data = {}) {
@@ -379,6 +396,7 @@ const paymentComponent = function () {
 
     function _checkPaymentByType(network, containerId) {
         const payment = paymentComponent.htmlToData(containerId);
+        payment.paymentType = payment.paymentType || 'nonstandard';
         payment.network = network;
         if (payment.paymentType === 'nonstandard') {
             if (payment.output && payment.output.length) {
