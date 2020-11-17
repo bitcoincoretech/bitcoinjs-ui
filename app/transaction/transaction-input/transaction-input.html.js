@@ -262,24 +262,26 @@ transactionInputComponent.dataToHtml = function dataToHtml(inputUUID, inputData)
     }
 
     const utxo = transactionOutputComponent.htmlToData(`utxo-details-${inputUUID}`);
-    inputData.scriptType = utxo.scriptType;
-    if (utxo.scriptType === 'p2sh') {
-        if (utxo.redeemScriptType === 'p2wsh') {
-            inputData.scriptType = 'p2wsh';
-            if (utxo.witnessScript && utxo.witnessScript.length) {
-                inputData.witnessScript = utxo.witnessScript;
-                inputData.witnessScriptType = utxo.witnessScriptType;
+    if (utxo.script || utxo.redeem || utxo.witnessScript) {
+        inputData.scriptType = utxo.scriptType;
+        if (utxo.scriptType === 'p2sh') {
+            if (utxo.redeemScriptType === 'p2wsh') {
+                inputData.scriptType = 'p2wsh';
+                if (utxo.witnessScript && utxo.witnessScript.length) {
+                    inputData.witnessScript = utxo.witnessScript;
+                    inputData.witnessScriptType = utxo.witnessScriptType;
+                }
+            } else {
+                inputData.redeemScript = utxo.redeem && utxo.redeem.output;
+                inputData.redeemScriptType = utxo.redeemScriptType;
             }
+        } else if (utxo.scriptType === 'p2wsh') {
+            inputData.witnessScript = utxo.witnessScript;
+            inputData.witnessScriptType = utxo.witnessScriptType;
         } else {
-            inputData.redeemScript = utxo.redeem && utxo.redeem.output;
-            inputData.redeemScriptType = utxo.redeemScriptType;
+            delete inputData.redeemScript;
+            delete inputData.redeemScriptType;
         }
-    } else if (utxo.scriptType === 'p2wsh') {
-        inputData.witnessScript = utxo.witnessScript;
-        inputData.witnessScriptType = utxo.witnessScriptType;
-    } else {
-        delete inputData.redeemScript;
-        delete inputData.redeemScriptType;
     }
 
     const utxoScriptType = utxo.scriptType + (utxo.redeemScriptType ? `-${utxo.redeemScriptType}` : '');
