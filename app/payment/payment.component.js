@@ -392,6 +392,7 @@ const paymentComponent = function () {
         }
         const dataFields = PAYMENT_FIELDS[payment.paymentType];
         const filteredPaymentData = _filterValuesForPaymentType(payment, dataFields);
+        filteredPaymentData.network = network;
 
         const paymentData = payment.paymentType === 'nonstandard' ? filteredPaymentData : bitcoinjs.payments[payment.paymentType](filteredPaymentData);
         paymentData.publicKeysList = (payment.publicKeysList || []).concat([]);
