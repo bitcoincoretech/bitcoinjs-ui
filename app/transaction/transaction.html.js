@@ -82,14 +82,6 @@ transactionComponent.createNew = function createNew(op) {
                     </td>
                 </tr>
 
-                <tr id="size-row-${op.containerUUID}" class="d-flex">
-                    <td class="col-sm-2"><label>Size</label></td>
-                    <td class="col-sm-10">
-                        <div> 
-                            <textarea id="size-${op.containerUUID}" disabled="true" rows="1" class="form-control w-25 asm"></textarea>
-                        </div>
-                    </td>
-                </tr>
                 <tr id="vsize-row-${op.containerUUID}" class="d-flex">
                     <td class="col-sm-2"><label>Virtual Size</label></td>
                     <td class="col-sm-10">
@@ -100,7 +92,7 @@ transactionComponent.createNew = function createNew(op) {
                 <tr id="weight-row-${op.containerUUID}" class="d-flex">
                     <td class="col-sm-2"><label>Weight</label></td>
                     <td class="col-sm-10">
-                        <div> <textarea id="weight" disabled="true" rows="1" class="form-control w-25 asm"></textarea>
+                        <div> <textarea id="weight-${op.containerUUID}" disabled="true" rows="1" class="form-control w-25 asm"></textarea>
                         </div>
                     </td>
                 </tr>
@@ -176,7 +168,6 @@ transactionComponent.dataToHtml = function dataToHtml(containerUUID, data) {
         return;
     }
     $(`#id-${containerUUID}`).val(data.tx.getId ? data.tx.getId() : '');
-    $(`#size-${containerUUID}`).val(data.tx.byteLength ? data.tx.byteLength() : 0);
     $(`#vsize-${containerUUID}`).val(data.tx.virtualSize ? data.tx.virtualSize() : 0);
     $(`#weight-${containerUUID}`).val(data.tx.weight ? data.tx.weight() : 0);
     $(`#version-${containerUUID}`).val(data.tx.version || 1);
