@@ -221,11 +221,11 @@ psbtComponent.createExternalMenu = function createExternalMenu(op) {
 }
 
 psbtComponent.dataToHtml = function dataToHtml(containerUUID, data) {
-    psbtDataComponent.dataToHtml(containerUUID, data);
+    psbtDataComponent.dataToHtml(`inner-${containerUUID}`, data);
 }
 
 psbtComponent.htmlToData = function htmlToData(containerUUID) {
-    const psbtData = psbtDataComponent.htmlToData(containerUUID);
+    const psbtData = psbtDataComponent.htmlToData(`inner-${containerUUID}`);
     const network = networkComponent.htmlToData('default');
     const psbt = new bitcoinjs.Psbt({
         network
@@ -254,5 +254,5 @@ psbtComponent.setRole = function setRole(containerUUID, role) {
 
     $(`.role-${role}-${containerUUID}`).removeClass('d-none');
 
-    // psbtDataComponent.setRole(containerUUID, role);
+    psbtDataComponent.setRole(`inner-${containerUUID}`, role);
 }

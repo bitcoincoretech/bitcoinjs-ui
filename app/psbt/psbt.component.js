@@ -11,7 +11,7 @@ const psbtComponent = function () {
 
             const phaseContainerUUID = _buildContainerUUIDForPhase(containerUUID);
             const psbtDataHtml = psbtDataComponent.createNew({
-                containerUUID: phaseContainerUUID
+                containerUUID: `inner-${phaseContainerUUID}`
             });
 
             $(`#psbt-${phase}-${containerUUID}`).html(psbtDataHtml);

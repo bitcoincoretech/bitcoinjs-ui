@@ -85,7 +85,7 @@ const psbtDataComponent = function () {
         return `
                 <button onclick="psbtDataComponent.removePsbtInput('${containerUUID}','${inputUUID}')" type="button" 
                     class="btn btn-danger btn-sm role-create-${inputUUID}" >
-                    <i class="fas fa-trash-alt "></i>
+                    <i class="fas fa-trash-alt"></i>
                 </button>`;
     }
 

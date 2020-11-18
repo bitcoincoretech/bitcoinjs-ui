@@ -27,13 +27,13 @@ transactionOutputComponent.createNew = function createNew(op) {
                                             <span class="input-group-text">Int64</span>
                                         </div>
                                         <input type="number" min="0" max="2100000000000000" value="0" id="outs-value-${op.outputUUID}" 
-                                            class="form-control asm read-only-disable-${op.outputUUID} role-create-${op.outputUUID}">
+                                            class="form-control asm read-only-disable-${op.outputUUID} role-create-${op.outputUUID} role-update-${op.outputUUID}">
                                     </div>
                                     
                                 </div>
                             </td>
                         </tr>
-                        <tr class="d-flex role-update-${op.outputUUID}">
+                        <tr class="d-flex">
                             <td class="col-sm-2">
                                 <label>Script</label>
                                 <input hidden id="is-read-only-payment-${op.outputUUID}" value="false">
@@ -48,12 +48,12 @@ transactionOutputComponent.createNew = function createNew(op) {
                                                     <span>Lock Script</span>
                                                 </th>
                                                 <th class="col-sm-8">
-                                                    <div class="float-right">
+                                                    <div class="float-right pointer">
                                                         <span id="outs-script-address-${op.outputUUID}" class="badge badge-secondary"></span>
                                                         
                                                         <i id="open-payment-${op.outputUUID}" 
                                                             onclick="transactionOutputComponent.openLockScriptModal('${op.outputUUID}')" 
-                                                            class="fas fa-edit fa-lg ml-1 text-info pointer read-only-hide-${op.outputUUID}" 
+                                                            class="fas fa-edit fa-lg ml-1 text-info  read-only-hide-${op.outputUUID}" 
                                                             data-toggle="modal" data-target="#modal-dialog">
                                                         </i>
                                                     </div>
@@ -220,5 +220,13 @@ transactionOutputComponent.setReadOnly = function setReadOnly(outputUUID, isRead
 }
 
 transactionOutputComponent.setRole = function setRole(outputUUID, role) {
-    if (role === 'create') {} else if (role === 'update') {} else if (role === 'sign') {}
+    $(`.role-create-${outputUUID}`).prop('disabled', true);
+    $(`.role-update-${outputUUID}`).prop('disabled', true);
+    if (role === 'create') {
+        $(`.role-create-${outputUUID}`).prop('disabled', false);
+    } else if (role === 'update') {
+        $(`.role-update-${outputUUID}`).prop('disabled', false);
+    } else if (role === 'sign') {
+
+    }
 }
