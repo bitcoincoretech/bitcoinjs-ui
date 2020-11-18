@@ -11,7 +11,7 @@ paymentComponent.createNew = function createNew(op) {
                     </tr>
                     <tr id="payment-type-${op.containerUUID}Row" class="d-flex">
                         <td class="col-sm-2">
-                            <label>Type</label>
+                            <label>Payment Type</label>
                         </td>
                         <td class="col-sm-5">
                             <select id="payment-type-${op.containerUUID}" onchange="paymentComponent.changePaymentType('${op.containerUUID}', this.value, ${op.txLocation || ''})"
