@@ -1,6 +1,7 @@
 transactionOutputComponent.createNew = function createNew(op) {
     return `<div id="output-entry-${op.outputUUID}" class="output-entry-row">
                 <input id="public-keys-list-${op.outputUUID}" hidden>
+                <input hidden id="is-read-only-${op.outputUUID}" value="false">
                 <table class="table table-sm border-left border-right border-bottom">
                     <thead class="thead-light">
                         <tr class="d-flex">
@@ -36,7 +37,6 @@ transactionOutputComponent.createNew = function createNew(op) {
                         <tr class="d-flex">
                             <td class="col-sm-2">
                                 <label>Script</label>
-                                <input hidden id="is-read-only-payment-${op.outputUUID}" value="false">
                             </td>
                             <td class="col-sm-10">
                                 <div class="output-group">
@@ -205,28 +205,25 @@ transactionOutputComponent.htmlToData = function htmlToData(outputUUID) {
 }
 
 transactionOutputComponent.setReadOnly = function setReadOnly(outputUUID, isReadOnly = false, allowPaymentView = false) {
+    $(`#is-read-only-${outputUUID}`).val(isReadOnly);
     if (isReadOnly === true) {
         $(`.read-only-disable-${outputUUID}`).prop('disabled', true);
         $(`.read-only-hide-${outputUUID}`).hide();
         $(`#open-payment-${outputUUID}`)[allowPaymentView ? 'show' : 'hide']();
-        $(`#is-read-only-payment-${outputUUID}`).val(true);
     } else {
         $(`.read-only-disable-${outputUUID}`).prop('disabled', false);
         $(`.read-only-hide-${outputUUID}`).show();
-        $(`#is-read-only-payment-${outputUUID}`).val(false);
+        $(`#open-payment-${outputUUID}`).show();
     }
-
-
 }
 
 transactionOutputComponent.setRole = function setRole(outputUUID, role) {
-    $(`.role-create-${outputUUID}`).prop('disabled', true);
-    $(`.role-update-${outputUUID}`).prop('disabled', true);
-    if (role === 'create') {
-        $(`.role-create-${outputUUID}`).prop('disabled', false);
-    } else if (role === 'update') {
-        $(`.role-update-${outputUUID}`).prop('disabled', false);
-    } else if (role === 'sign') {
-
+    if (!role) {
+        return;
+    }
+    if (role === 'create' || role === 'update') {
+        transactionOutputComponent.setReadOnly(outputUUID, false);
+    } else {
+        transactionOutputComponent.setReadOnly(outputUUID, true, true);
     }
 }

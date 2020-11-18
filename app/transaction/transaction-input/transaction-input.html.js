@@ -458,17 +458,15 @@ transactionInputComponent.setReadOnly = function setReadOnly(inputUUID, isReadOn
 }
 
 transactionInputComponent.setRole = function setRole(inputUUID, role) {
+    if (!role) {
+        return;
+    }
+    $(`.role-create-${inputUUID}`).prop('disabled', true);
+    $(`.role-update-${inputUUID}`).prop('disabled', true);
+
     if (role === 'create') {
         $(`.role-create-${inputUUID}`).prop('disabled', false);
-        $(`.role-update-${inputUUID}`).removeClass('d-flex').addClass('d-none');
-        $(`.role-sign-${inputUUID}`).removeClass('d-flex').addClass('d-none');
     } else if (role === 'update') {
         $(`.role-update-${inputUUID}`).prop('disabled', false);
-        $(`.role-create-${inputUUID}`).prop('disabled', true);
-        $(`.role-sign-${inputUUID}`).removeClass('d-flex').addClass('d-none');
-    } else if (role === 'sign') {
-        $(`.role-sign-${inputUUID}`).removeClass('d-none').addClass('d-flex');
-        $(`.role-create-${inputUUID}`).prop('disabled', true);
-        $(`.role-update-${inputUUID}`).prop('disabled', true);
     }
 }

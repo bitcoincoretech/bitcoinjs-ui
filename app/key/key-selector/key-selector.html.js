@@ -13,7 +13,8 @@ keySelectorComponent.createNew = function createNew(op) {
             </div>
             <div class="col-sm-6">
                 <input hidden id="key-type-${op.containerUUID}">
-                <select id="key-list-${op.containerUUID}" onchange="keySelectorComponent.changeSelectedKey('${op.containerUUID}')" class="form-control">
+                <select id="key-list-${op.containerUUID}" onchange="keySelectorComponent.changeSelectedKey('${op.containerUUID}')" 
+                    class="form-control read-only-disable-${op.containerUUID}">
                     <option value="">None</option>
                 </select>
             </div>
@@ -29,7 +30,7 @@ keySelectorComponent.createNew = function createNew(op) {
                     <div class="input-group-prepend">
                         <span class="input-group-text">hex</span>
                     </div>
-                    <input type="text" id="key-fingerprint-${op.containerUUID}" class="form-control">
+                    <input type="text" id="key-fingerprint-${op.containerUUID}" class="form-control read-only-disable-${op.containerUUID}">
                 </div>
             </div>
             <div class="col-sm-4">
@@ -45,9 +46,10 @@ keySelectorComponent.createNew = function createNew(op) {
                     <div class="input-group-prepend">
                         <span class="input-group-text">path</span>
                     </div>
-                    <input type="text" id="key-path-${op.containerUUID}" class="form-control">
+                    <input type="text" id="key-path-${op.containerUUID}" class="form-control read-only-disable-${op.containerUUID}">
                     <div class="input-group-append">
-                        <button id="check-hd-path-button-${op.containerUUID}" onclick="keySelectorComponent.checkHDPath('${op.containerUUID}')" class="btn btn-info">
+                        <button id="check-hd-path-button-${op.containerUUID}" onclick="keySelectorComponent.checkHDPath('${op.containerUUID}')" 
+                            class="btn btn-info read-only-hide-${op.containerUUID}">
                             Check
                         </button>  
                     </div>
@@ -65,7 +67,7 @@ keySelectorComponent.createNew = function createNew(op) {
                     <div class="input-group-prepend">
                         <span class="input-group-text">hex</span>
                     </div>
-                    <textarea id="public-key-value-${op.containerUUID}" rows="2" class="form-control"></textarea>
+                    <textarea id="public-key-value-${op.containerUUID}" rows="2" class="form-control read-only-disable-${op.containerUUID}"></textarea>
                 </div>
             </div>
         </div>
@@ -123,4 +125,14 @@ keySelectorComponent.htmlToData = function htmlToData(containerUUID) {
         path: $(`#key-path-${containerUUID}`).val() || '',
         publicKey: $(`#public-key-value-${containerUUID}`).val() || '',
     };
+}
+
+keySelectorComponent.setReadOnly = function setReadOnly(containerUUID, isReadOnly = false) {
+    if (isReadOnly === true) {
+        $(`.read-only-disable-${containerUUID}`).prop('disabled', true);
+        $(`.read-only-hide-${containerUUID}`).hide();
+    } else {
+        $(`.read-only-disable-${containerUUID}`).prop('disabled', false);
+        $(`.read-only-hide-${containerUUID}`).show();
+    }
 }

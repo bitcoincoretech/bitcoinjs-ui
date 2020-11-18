@@ -17,8 +17,8 @@ const transactionOutputComponent = function () {
             paymentComponent.fromTxOutput(paymentContainerUUID, outputData);
             paymentComponent.updateComputedValues(paymentContainerUUID);
 
-            const isReadOnlyPayment = $(`#is-read-only-payment-${outputUUID}`).val() === 'true';
-            paymentComponent.setReadOnly(paymentContainerUUID, isReadOnlyPayment);
+            const isReadOnly = $(`#is-read-only-${outputUUID}`).val() === 'true';
+            paymentComponent.setReadOnly(paymentContainerUUID, isReadOnly);
             $('#modal-confirm-button').click(function () {
                 try {
                     const payment = paymentComponent.checkPayment(paymentContainerUUID);

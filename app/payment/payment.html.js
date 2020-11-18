@@ -2,6 +2,7 @@ paymentComponent.createNew = function createNew(op) {
     return `
         <div id="payment-container-${op.containerUUID}">
             <input hidden id="witness-script-value-${op.containerUUID}">
+            <input hidden id="is-read-only-${op.containerUUID}" value="false">
             <table class="table table-sm p-4 mb-4 border-left border-right border-bottom">
                 <thead>
                     <tr class="d-flex thead-dark">
@@ -50,7 +51,7 @@ paymentComponent.createNew = function createNew(op) {
                                 <input hidden id="pubkey-path-${op.containerUUID}">
                                 <div class="input-group-append">
                                     <button id="single-pubkey-update-button-${op.containerUUID}" onclick="paymentComponent.updateSinglePublicKeyDetails('${op.containerUUID}', '${op.containerUUID}')" 
-                                        class="btn btn-success d-none">
+                                        class="btn btn-success d-none read-only-hide-${op.containerUUID}">
                                         OK
                                     </button> 
                                     <button id="single-pubkey-toggle-button-${op.containerUUID}" onclick="paymentComponent.toggleSinglePublicKeyDetails('${op.containerUUID}', '${op.containerUUID}')"
@@ -646,6 +647,7 @@ paymentComponent.htmlToData = function htmlToData(containerUUID) {
 
 
 paymentComponent.setReadOnly = function setReadOnly(containerUUID, isReadOnly = false) {
+    $(`#is-read-only-${containerUUID}`).val(isReadOnly);
     if (isReadOnly === true) {
         $(`.read-only-disable-${containerUUID}`).prop('disabled', true);
         $(`.read-only-hide-${containerUUID}`).hide();
