@@ -376,7 +376,7 @@ const paymentComponent = function () {
                 <input hidden id="pubkey-path-${publicKeyContainerUUID}" value="${data.path || ''}">
                 <div class="input-group-append">
                     <button id="single-pubkey-update-button-${publicKeyContainerUUID}" onclick="paymentComponent.updateSinglePublicKeyDetails('${containerUUID}', '${publicKeyContainerUUID}')" 
-                        class="btn btn-success d-none read-only-hide-${op.containerUUID}">
+                        class="btn btn-success d-none read-only-hide-${containerUUID}">
                         OK
                     </button> 
                     <button id="single-pubkey-toggle-button-${publicKeyContainerUUID}" onclick="paymentComponent.toggleSinglePublicKeyDetails('${containerUUID}', '${publicKeyContainerUUID}')" 

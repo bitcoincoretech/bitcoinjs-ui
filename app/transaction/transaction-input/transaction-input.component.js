@@ -12,9 +12,11 @@ const transactionInputComponent = function () {
             containerUUID: paymentContainerUUID
         }));
         const inputData = transactionInputComponent.htmlToData(inputUUID);
+        const isReadOnly = $(`#is-read-only-${inputUUID}`).val() === 'true';
         try {
             paymentComponent.fromTxInput(paymentContainerUUID, inputData);
             paymentComponent.updateComputedValues(paymentContainerUUID);
+            paymentComponent.setReadOnly(paymentContainerUUID, isReadOnly, true);
         } catch (err) {
             console.error(err);
             openToasty('Open Payment', err.message, true);
@@ -66,9 +68,11 @@ const transactionInputComponent = function () {
         if (inputData.publicKeysList) {
             paymentData.publicKeysList = inputData.publicKeysList;
         }
+        const isReadOnly = $(`#is-read-only-${inputUUID}`).val() === 'true';
         paymentComponent.changePaymentType(paymentContainerUUID, inputData.redeemScriptType);
         paymentComponent.dataToHtml(paymentContainerUUID, paymentData, true);
         paymentComponent.updateComputedValues(paymentContainerUUID);
+        paymentComponent.setReadOnly(paymentContainerUUID, isReadOnly, true);
         $('#modal-confirm-button').click(function () {
             const payment = paymentComponent.checkPayment(paymentContainerUUID);
             if (payment) {
@@ -139,6 +143,7 @@ const transactionInputComponent = function () {
     function toggleUTXODetails(inputUUID) {
         try {
             const isVisible = !$(`#utxo-${inputUUID}-row`).hasClass('d-none');
+            const isReadOnly = $(`#is-read-only-${inputUUID}`).val() === 'true';
             if (isVisible) {
                 _hideUTXODetails(inputUUID);
                 return;
@@ -153,6 +158,7 @@ const transactionInputComponent = function () {
             });
             $(`#utxo-details-container-${inputUUID}`).html(`<div id="utxo-edit-details-${utxoContainerUUID}">${utxoHtml}</div>`);
             transactionOutputComponent.dataToHtml(utxoContainerUUID, outputData);
+            transactionOutputComponent.setReadOnly(utxoContainerUUID, isReadOnly, true);
 
             $(`#utxo-details-toggle-button-${inputUUID}`).html('Cancel').removeClass('btn-info').addClass('btn-secondary');
             $(`#utxo-details-update-button-${inputUUID}`).removeClass('d-none');
@@ -164,15 +170,6 @@ const transactionInputComponent = function () {
             openToasty('UTXO Details', err.message, true);
         }
     }
-
-    function _hideUTXODetails(inputUUID) {
-        $(`#utxo-details-toggle-button-${inputUUID}`).html('More').addClass('btn-info').removeClass('btn-secondary');
-        $(`#utxo-details-update-button-${inputUUID}`).addClass('d-none');
-        $(`#utxo-${inputUUID}-row`).addClass('d-none')
-        $(`#utxo-details-container-${inputUUID}`).empty();
-        $(`.input-row-${inputUUID}`).removeClass('blur-medium');
-    }
-
 
     function updateUTXODetails(inputUUID) {
         try {
@@ -225,19 +222,12 @@ const transactionInputComponent = function () {
         _hideUTXODetails(inputUUID);
     }
 
-    function addSignature(inputUUID, data) {
-        const signatureUUID = uuidv4();
-        const signatureEntryHtml = signatureEntryComponent.createNew({
-            containerUUID: signatureUUID
-        });
-        $(`#ins-signatures-container-${inputUUID}`).append(`
-            <tr id="container-${signatureUUID}" class="d-flex">
-                <td class="col-sm-12">
-                    ${signatureEntryHtml}
-                </td>
-            </tr>
-        `);
-        signatureEntryComponent.dataToHtml(signatureUUID, data);
+    function _hideUTXODetails(inputUUID) {
+        $(`#utxo-details-toggle-button-${inputUUID}`).html('More').addClass('btn-info').removeClass('btn-secondary');
+        $(`#utxo-details-update-button-${inputUUID}`).addClass('d-none');
+        $(`#utxo-${inputUUID}-row`).addClass('d-none')
+        $(`#utxo-details-container-${inputUUID}`).empty();
+        $(`.input-row-${inputUUID}`).removeClass('blur-medium');
     }
 
     function _validateScriptAgainstTx(inputUUID, script) {
@@ -255,18 +245,12 @@ const transactionInputComponent = function () {
         }
     }
 
-
-
-
-
-
     return {
         openUnlockScriptModal,
         openRedeemScriptModal,
         removePreviousTx,
         updateHeaderContainer,
         changePreviousOutputIndex,
-        addSignature,
         setTitle,
         openPreviousTxModal,
         setPreviousTxHex,

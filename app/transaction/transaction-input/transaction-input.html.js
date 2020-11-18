@@ -1,10 +1,11 @@
 transactionInputComponent.createNew = function createNew(op) {
     return `
         <div id="input-entry-${op.inputUUID}">
-            <input id="previous-tx-hex-${op.inputUUID}" hidden>
-            <input id="public-keys-list-${op.inputUUID}" hidden>
-            <input id="signatures-list-${op.inputUUID}" hidden>
-            <input type="number" hidden id="input-sighash-value-${op.inputUUID}">
+            <input hidden id="previous-tx-hex-${op.inputUUID}">
+            <input hidden id="public-keys-list-${op.inputUUID}">
+            <input hidden id="signatures-list-${op.inputUUID}">
+            <input hidden type="number" id="input-sighash-value-${op.inputUUID}">
+            <input hidden id="is-read-only-${op.inputUUID}" value="false">
             <table class="table table-sm border-left border-bottom">
                 <thead class="thead-light">
                     <tr class="d-flex">
@@ -39,7 +40,8 @@ transactionInputComponent.createNew = function createNew(op) {
                                     <div class="input-group-append">
                                         <button type="button" id="set-previous-tx-${op.inputUUID}"
                                             onclick="transactionInputComponent.openTransactionFromHexModal('${op.inputUUID}')"
-                                            class="btn btn-sm btn-info read-only-hide-${op.inputUUID}" data-toggle="modal" data-target="#modal-dialog">
+                                            class="btn btn-sm btn-info read-only-hide-${op.inputUUID}"
+                                            data-toggle="modal" data-target="#modal-dialog">
                                             Set TX
                                         </button>
 
@@ -79,12 +81,12 @@ transactionInputComponent.createNew = function createNew(op) {
                                         <div class="input-group-append">
                                             <button id="utxo-details-update-button-${op.inputUUID}"
                                                 onclick="transactionInputComponent.updateUTXODetails('${op.inputUUID}')"
-                                                type="button" class="btn btn-success btn-sm d-none">
+                                                type="button" class="btn btn-success btn-sm d-none  read-only-hide-${op.inputUUID}">
                                                 OK
                                             </button>
                                             <button id="utxo-details-toggle-button-${op.inputUUID}"
                                                 onclick="transactionInputComponent.toggleUTXODetails('${op.inputUUID}')"
-                                                type="button" class="btn btn-info btn-sm read-only-hide-${op.inputUUID}">
+                                                type="button" class="btn btn-info btn-sm">
                                                 More
                                             </button>
                                         </div>
@@ -154,7 +156,7 @@ transactionInputComponent.createNew = function createNew(op) {
                                                 
                                                 <th class="col-sm-6">
                                                     <i onclick="transactionInputComponent.openUnlockScriptModal('${op.inputUUID}')"
-                                                        class="far fa-edit fa-lg pointer mr-3 pt-1 text-info float-right read-only-hide-${op.inputUUID}"
+                                                        class="far fa-edit fa-lg pointer mr-3 pt-1 text-info float-right read-only-hide-${op.inputUUID} open-payment-${op.inputUUID}"
                                                         data-toggle="modal" data-target="#modal-dialog"></i>
                                                 </th>
                                             </tr>
@@ -176,7 +178,7 @@ transactionInputComponent.createNew = function createNew(op) {
                                                     <span id="redeem-script-type-label-${op.inputUUID}" class="badge badge-secondary mr-3"></span>
                                                     <span>Redeem Script</span>
                                                     <i onclick="transactionInputComponent.openRedeemScriptModal('${op.inputUUID}')"
-                                                        class="far fa-edit fa-lg text-info float-right mr-3 pt-1 pointer read-only-hide-${op.inputUUID} "
+                                                        class="far fa-edit fa-lg text-info float-right mr-3 pt-1 pointer read-only-hide-${op.inputUUID} open-payment-${op.inputUUID}"
                                                         data-toggle="modal" data-target="#modal-dialog">
                                                     </i>
                                                 </th>
@@ -441,32 +443,26 @@ transactionInputComponent.htmlToData = function htmlToData(inputUUID) {
     return inputData;
 }
 
-transactionInputComponent.setReadOnly = function setReadOnly(inputUUID, isReadOnly = false) {
+transactionInputComponent.setReadOnly = function setReadOnly(inputUUID, isReadOnly = false, allowPaymentView = false) {
+    $(`#is-read-only-${inputUUID}`).val(isReadOnly);
     if (isReadOnly === true) {
         $(`.read-only-disable-${inputUUID}`).prop('disabled', true);
         $(`.read-only-hide-${inputUUID}`).hide();
-        $(`.read-only-disable-ins-witness-${inputUUID}`).prop('disabled', true);
-        $(`.read-only-hide-ins-witness-${inputUUID}`).hide();
+        $(`.open-payment-${inputUUID}`)[allowPaymentView ? 'show' : 'hide']();
     } else {
         $(`.read-only-disable-${inputUUID}`).prop('disabled', false);
         $(`.read-only-hide-${inputUUID}`).show();
-        $(`.read-only-disable-ins-witness-${inputUUID}`).prop('disabled', false);
-        $(`.read-only-hide-ins-witness-${inputUUID}`).show();
+        $(`.open-payment-${inputUUID}`).show();
     }
-    // TODO: revisit
-    transactionOutputComponent.setReadOnly(`utxo-details-${inputUUID}`, isReadOnly);
 }
 
 transactionInputComponent.setRole = function setRole(inputUUID, role) {
     if (!role) {
         return;
     }
-    $(`.role-create-${inputUUID}`).prop('disabled', true);
-    $(`.role-update-${inputUUID}`).prop('disabled', true);
-
-    if (role === 'create') {
-        $(`.role-create-${inputUUID}`).prop('disabled', false);
-    } else if (role === 'update') {
-        $(`.role-update-${inputUUID}`).prop('disabled', false);
+    if (role === 'create' || role === 'update') {
+        transactionInputComponent.setReadOnly(inputUUID, false);
+    } else {
+        transactionInputComponent.setReadOnly(inputUUID, true, true);
     }
 }
