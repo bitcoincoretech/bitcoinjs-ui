@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Bitcoin JS UI</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+        integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/app.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script src="lib/bitcoinjs-lib.js"></script>
+    <script src="lib/safe-buffer.js"></script>
+    <!-- remove  import after P2SH fix -->
+    <script src="lib/classify-script.js"></script>
+
+
+    <script src="app/transaction/transaction-input/transaction-input.component.js"></script>
+    <script src="app/transaction/transaction-input/transaction-input.html.js"></script>
+
+    <script src="app/transaction/transaction-output/transaction-output.component.js"></script>
+    <script src="app/transaction/transaction-output/transaction-output.html.js"></script>
+
+
+    <script src="app/network/network.component.js"></script>
+    <script src="app/network/network.html.js"></script>
+
+    <script src="app/key/key-manager/key-manager.component.js"></script>
+    <script src="app/key/key-manager/key-manager.html.js"></script>
+
+    <script src="app/key/key-selector/key-selector.component.js"></script>
+    <script src="app/key/key-selector/key-selector.html.js"></script>
+
+    <script src="app/key/key-pair/key-pair.component.js"></script>
+    <script src="app/key/key-pair/key-pair.html.js"></script>
+
+    <script src="app/key/hd-key/hd-key.component.js"></script>
+    <script src="app/key/hd-key/hd-key.html.js"></script>
+
+    <script src="app/signature/sign-input/sign-input.component.js"></script>
+    <script src="app/signature/sign-input/sign-input.html.js"></script>
+
+    <script src="app/signature/signature-entry/signature-entry.component.js"></script>
+    <script src="app/signature/signature-entry/signature-entry.html.js"></script>
+
+    <script src="app/signature/sighash/sighash.component.js"></script>
+    <script src="app/signature/sighash/sighash.html.js"></script>
+
+
+    <script src="app/transaction/transaction.fields.js"></script>
+    <script src="app/transaction/transaction.component.js"></script>
+    <script src="app/transaction/transaction.html.js"></script>
+
+    <script src="app/psbt/psbt.component.js"></script>
+    <script src="app/psbt/psbt.html.js"></script>
+
+    <script src="app/psbt/psbt-data/psbt-data.component.js"></script>
+    <script src="app/psbt/psbt-data/psbt-data.html.js"></script>
+
+    <script src="app/psbt/psbt-input/psbt-input.component.js"></script>
+    <script src="app/psbt/psbt-input/psbt-input.html.js"></script>
+
+    <script src="app/ui/utils-ui.js"></script>
+
+    <script src="app/payment/payment.component.js"></script>
+    <script src="app/payment/payment.html.js"></script>
+    <script src="app/payment/payment.fields.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $(`#toasty`).hide();
+            openToasty('Hello!', 'This is a testing app. Do NOT use with Production data!');
+
+            $(`#network-container`).html(networkComponent.createNew({ containerUUID: 'default' }));
+
+            const psbtContainerUUID = uuidv4();
+            $(`#psbtContainer`).html(psbtComponent.createNew({ containerUUID: psbtContainerUUID }));
+
+            $(`#bottom-menu`).html(psbtComponent.createExternalMenu({ containerUUID: psbtContainerUUID }));
+            psbtComponent.setCurrentPhase(psbtContainerUUID, 'create');
+            $(`#psbtTabHeader`).click(function () {
+                $(`#bottom-menu`).html(psbtComponent.createExternalMenu({ containerUUID: psbtContainerUUID }));
+                psbtComponent.setCurrentPhase(psbtContainerUUID);
+            });
+
+            const transactionContainerUUID = uuidv4();
+            $(`#txContainer`).html(transactionComponent.createNew({ containerUUID: transactionContainerUUID }));
+            transactionComponent.initInOutLists(transactionContainerUUID);
+            $(`#txDetailsTabHeader`).click(function () {
+                $(`#bottom-menu`).html(transactionComponent.createExternalMenu({ containerUUID: transactionContainerUUID }));
+            });
+
+            const paymentContainerUUID = uuidv4();
+            $(`#paymentCheckContainer`).html(paymentComponent.createNew({ containerUUID: paymentContainerUUID }));
+            paymentComponent.changePaymentType(paymentContainerUUID, 'nonstandard');
+            $(`#paymentCheckTabHeader`).click(function () {
+                $(`#bottom-menu`).html(paymentComponent.createExternalMenu({ containerUUID: paymentContainerUUID }));
+            });
+        });
+    </script>
+
+</head>
+
+<body class="background-grey">
+    <nav class="navbar navbar-expand-md bg-dark navbar-dark sticky-top mb-3">
+        <div class="row w-100">
+            <div class="col-sm-3">
+                <a class="navbar-brand" href="https://github.com/bitcoincoretech" target="_blank">Bitcoin JS UI <i
+                        class="fab fa-lg fa-github pl-3"></i></a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+            <div class="col-sm-5">
+                <ul class="nav navbar-nav justify-content-center pt-20">
+                    <li id="psbtTabHeader" class="nav-item">
+                        <a class="nav-link active" data-toggle="tab" href="#psbtTab">PSBT</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link">|</a>
+                    </li>
+                    <li id="txDetailsTabHeader" class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#txDetailsTab">Transaction</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link">|</a>
+                    </li>
+                    <li id="paymentCheckTabHeader" class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#paymentCheckTab">Payment</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-sm-2">
+                <button onclick="keyManagerComponent.openInDefaultModal()" type="button" class="btn btn-warning btn-sm float-right"
+                    data-toggle="modal" data-target="#modal-dialog">
+                    Keys 
+                    <i class="fas fa-key"></i>
+                    <span id="default-keys-count"  class="badge badge-light mt-1 ml-1 mr-1">0</span>
+                </button>
+            </div>
+            <div class="col-sm-2">
+
+                <div id="network-container">
+
+                </div>
+            </div>
+        </div>
+
+
+
+    </nav>
+
+
+    <div class="container background-white shadow rounded-sm pb-5 mt-5 mb-100">
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div id="psbtTab" class="container tab-pane active"><br>
+                <div id="psbtContainer"> </div>
+            </div>
+            <div id="txDetailsTab" class="container fade tab-pane"><br>
+                <div id="txContainer"> </div>
+            </div>
+            <div id="paymentCheckTab" class="container tab-pane fade"><br>
+                <div id="paymentCheckContainer">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="modal fade" id="modal-dialog" tabindex='-1'>
+        <div class="modal-dialog modal-xl modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="modal-title">Modal Heading</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <div class="modal-body" id="modal-body">
+                </div>
+
+                <div class="modal-footer">
+                    <div class="row w-100">
+                        <div id="modal-extra-buttons" class="col-sm-6 float-left"></div>
+                        <div class="col-sm-6">
+                            <div class="float-right">
+                                <button type="button" id="modal-confirm-button" class="btn btn-primary button120"
+                                    data-dismiss="modal">OK</button>
+                                <button type="button" id="close-modal-button" class="btn btn-secondary ml-3 button120"
+                                    data-dismiss="modal">Close</button>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div hidden id="key-manager-default-data"></div>
+
+
+
+    <div style="position: fixed; top: 3rem; right: 0; z-index: 10000;">
+        <div id="toasty" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="5000"
+            style="width: 50rem !important;">
+            <div class="toast-header">
+                <strong id="toast-title" class="mr-auto">Toast Title</strong>
+                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="toast-body">
+                <div id="toast-message-type" class="alert alert-success">
+                    <span id="toast-message"> </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-dark fixed-bottom h-60">
+        <div class="row w-100 mt-2">
+            <div id="bottom-menu" class="col-sm-12 d-flex justify-content-center">
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

@@ -1,0 +1,6 @@
+const networkComponent = function () {
+
+    return {
+
+    }
+}();

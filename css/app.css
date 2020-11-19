@@ -1,0 +1,40 @@
+.pointer {
+  cursor: pointer;
+}
+
+.asm {
+  font-family: 'Courier New';
+  word-break: break-all;
+}
+
+.break-long-words {
+  word-break: break-all;
+}
+
+.button120 {
+  width: 120px !important;
+}
+
+.w-95 {
+  width: 95% !important;
+}
+
+.h-60 {
+  height: 60px;
+}
+
+.mb-100 {
+  margin-bottom: 100px;
+}
+
+.background-grey {
+  background-color: #f7f9fb!important;
+}
+
+.background-white {
+  background-color: #ffffff!important;
+}
+
+.blur-medium {
+  filter: blur(4px);
+}
