@@ -1,5 +1,6 @@
 # bitcoinjs-ui
-A simple UI that uses the open source library [bitcoinjs-lib](https://github.com/bitcoinjs/bitcoinjs-lib)
+A simple UI that uses the open source library [bitcoinjs-lib](https://github.com/bitcoinjs/bitcoinjs-lib).
+Can be accessed [here](https://bitcoincoretech.github.io/apps/bitcoinjs-ui/index.html)
 
 Some examples of how it can be used
 
