@@ -4,6 +4,8 @@ Can be accessed [here](https://bitcoincoretech.github.io/apps/bitcoinjs-ui/index
 
 ### Video Tutorial
 
+Click for the full version
+
 [![psbt-test-vector-30-seconds](https://user-images.githubusercontent.com/2951406/103563117-e0fa7900-4ec4-11eb-979f-d09013df5283.gif)](https://youtu.be/I4o5b9IhWEA)
 
 ### Some examples of how it can be used
