@@ -3,6 +3,8 @@ Can be accessed [here](https://bitcoincoretech.github.io/apps/bitcoinjs-ui/index
 
 A simple UI that uses the open source library [bitcoinjs-lib](https://github.com/bitcoinjs/bitcoinjs-lib).
 
+**Note**: this is still alpha version, do **NOT** use with production data! Any submitted bug/request is appreciated.
+
 
 ### Video Tutorial
 
