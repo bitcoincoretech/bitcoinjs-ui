@@ -1,13 +1,13 @@
 const transactionComponent = function () {
 
-    function addTxInput(containerUUID, inputData) {
+    function addTxInput(containerUUID, inputData, annot) {
         const inputUUID = uuidv4();
         const inputHtml = transactionInputComponent.createNew({
             inputUUID
         });
         $(`#ins-${containerUUID}`).append(`<div id="tx-input-${inputUUID}" class="shadow mb-2 mt-2 mr-2">${inputHtml}</div>`);
         if (inputData) {
-            transactionInputComponent.dataToHtml(inputUUID, inputData);
+            transactionInputComponent.dataToHtml(inputUUID, inputData, annot);
         }
         transactionInputComponent.updateHeaderContainer(inputUUID, _buildInputHeader(containerUUID, inputUUID));
 
@@ -26,14 +26,14 @@ const transactionComponent = function () {
         $(`#label-count-ins-${containerUUID}`).text(inputs.length);
     }
 
-    function addTxOutput(containerUUID, outputData) {
+    function addTxOutput(containerUUID, outputData, annot) {
         const outputUUID = uuidv4();
         const outputHtml = transactionOutputComponent.createNew({
             outputUUID
         });
         $(`#outs-${containerUUID}`).append(`<div id="tx-output-${outputUUID}" class="shadow mb-2 mt-2 mr-2">${outputHtml}</div>`);
         if (outputData) {
-            transactionOutputComponent.dataToHtml(outputUUID, outputData);
+            transactionOutputComponent.dataToHtml(outputUUID, outputData, annot);
         }
         transactionOutputComponent.updateHeaderContainer(outputUUID, _buildOutputHeader(containerUUID, outputUUID));
 
@@ -83,11 +83,13 @@ const transactionComponent = function () {
         });
     }
 
-    function populateTransactionFromHex(containerUUID, txHexValue){
+    function populateTransactionFromHex(containerUUID, txHexValue, annot) {
+        console.log('annot', annot)
         const tx = txHexValue ? bitcoinjs.Transaction.fromHex(txHexValue) : null;
         if (tx) {
             transactionComponent.dataToHtml(containerUUID, {
-                tx
+                tx,
+                annot
             });
         }
     }

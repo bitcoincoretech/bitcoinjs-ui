@@ -170,6 +170,10 @@ transactionComponent.dataToHtml = function dataToHtml(containerUUID, data) {
     if (!data || !data.tx) {
         return;
     }
+    const annot = data.annot || {
+        inputs: [],
+        outputs: []
+    }
     $(`#id-${containerUUID}`).val(data.tx.getId ? data.tx.getId() : '');
     $(`#vsize-${containerUUID}`).val(data.tx.virtualSize ? data.tx.virtualSize() : 0);
     $(`#weight-${containerUUID}`).val(data.tx.weight ? data.tx.weight() : 0);
@@ -177,13 +181,18 @@ transactionComponent.dataToHtml = function dataToHtml(containerUUID, data) {
     $(`#locktime-${containerUUID}`).val(data.tx.locktime || 0);
     $(`#isCoinbase-${containerUUID}`).val((data.tx.isCoinbase && data.tx.isCoinbase()) ? 'Yes' : 'No');
     $(`#ins-${containerUUID}`).empty();
-    (data.tx.ins || []).forEach((input) => {
-        transactionComponent.addTxInput(containerUUID, input);
+    (data.tx.ins || []).forEach((input, index) => {
+        transactionComponent.addTxInput(containerUUID, input, annot.inputs[index]);
     });
     $(`#outs-${containerUUID}`).empty();
     (data.tx.outs || []).forEach((output) => {
         transactionComponent.addTxOutput(containerUUID, output);
     });
+
+    if (annot.txNote) {
+        $(`#txNote`).text(annot.txNote);
+        $(`#txNote`).removeClass('d-none')
+    }
 }
 
 transactionComponent.setReadOnly = function setReadOnly(containerUUID, isReadOnly = false) {
