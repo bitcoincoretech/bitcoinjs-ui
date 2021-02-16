@@ -74,6 +74,10 @@
 
     <script>
         $(document).ready(function () {
+            $(function () {
+                $('[data-toggle="popover"]').popover()
+            })
+
             $(`#toasty`).hide();
             openToasty('Hello!', 'This is a testing app. Do NOT use with Production data!');
 
@@ -102,6 +106,41 @@
             $(`#paymentCheckTabHeader`).click(function () {
                 $(`#bottom-menu`).html(paymentComponent.createExternalMenu({ containerUUID: paymentContainerUUID }));
             });
+
+
+
+            ////
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('tx_hex')) {
+                try {
+                    console.log('tx_hex: ', urlParams.has('tx_hex'), urlParams.get('tx_hex')); // true
+                    const txHexValue = urlParams.get('tx_hex');
+                    transactionComponent.populateTransactionFromHex(transactionContainerUUID, txHexValue);
+                    $(`#xx1`).click();
+                    // $(document).scrollTop( $("#txDetailsTab").offset().top ); 
+
+                    // $(`#psbtTabHeader`).removeClass('active')
+                    // $(`#txTabHeader`).addClass('active')
+                    // $(`#txDetailsTab`).click();
+                    // $(`#txDetailsTabHeader`).click();
+
+                } catch (err) {
+                    console.error(err);
+                    openToasty('Transaction From Hex', err.message, true);
+                }
+            }
+            if (urlParams.has('tx_note')) {
+                $(`#txNote`).text(urlParams.get('tx_note'));
+                $(`#txNote`).removeClass('d-none')
+            }
+            console.log('tx_note: ', urlParams.has('tx_note'), urlParams.get('tx_note')); // true
+            setTimeout(() => {
+                $('#feedbackButton').popover('show');
+                setTimeout(() => {
+                    $('#feedbackButton').popover('hide');
+                }, 4000)
+            }, 4000)
+
         });
     </script>
 
@@ -111,11 +150,13 @@
     <nav class="navbar navbar-expand-md bg-dark navbar-dark sticky-top mb-3">
         <div class="row w-100">
             <div class="col-sm-3">
-                <a class="navbar-brand" href="https://github.com/bitcoincoretech/bitcoinjs-ui" target="_blank">Bitcoin JS UI <i
-                        class="fab fa-lg fa-github pl-3"></i></a>
+                <a class="navbar-brand" href="https://github.com/bitcoincoretech/bitcoinjs-ui" target="_blank">Bitcoin
+                    JS UI <i class="fab fa-lg fa-github pl-3"></i></a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+                <a href="#" id="feedbackButton" data-toggle="popover" data-placement="bottom" title="Feedback"
+                    data-content="If you find this project useful please star it on GitHub!"></a>
             </div>
             <div class="col-sm-5">
                 <ul class="nav navbar-nav justify-content-center pt-20">
@@ -126,7 +167,7 @@
                         <a class="nav-link">|</a>
                     </li>
                     <li id="txDetailsTabHeader" class="nav-item">
-                        <a class="nav-link" data-toggle="tab" href="#txDetailsTab">Transaction</a>
+                        <a id="xx1" class="nav-link" data-toggle="tab" href="#txDetailsTab">Transaction</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link">|</a>
@@ -137,11 +178,11 @@
                 </ul>
             </div>
             <div class="col-sm-2">
-                <button onclick="keyManagerComponent.openInDefaultModal()" type="button" class="btn btn-warning btn-sm float-right"
-                    data-toggle="modal" data-target="#modal-dialog">
-                    Keys 
+                <button onclick="keyManagerComponent.openInDefaultModal()" type="button"
+                    class="btn btn-warning btn-sm float-right" data-toggle="modal" data-target="#modal-dialog">
+                    Keys
                     <i class="fas fa-key"></i>
-                    <span id="default-keys-count"  class="badge badge-light mt-1 ml-1 mr-1">0</span>
+                    <span id="default-keys-count" class="badge badge-light mt-1 ml-1 mr-1">0</span>
                 </button>
             </div>
             <div class="col-sm-2">

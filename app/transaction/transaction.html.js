@@ -1,7 +1,10 @@
 transactionComponent.createNew = function createNew(op) {
     return `
-    <div id="transaction-container-${op.containerUUID}">
 
+    <div id="transaction-container-${op.containerUUID}">
+        <div id="txNote" class="alert alert-info d-none">
+            
+        </div>
         <table class="table table-sm border-bottom">
             <tbody>
                 <tr class="d-flex">
