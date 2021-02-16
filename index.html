@@ -79,7 +79,6 @@
             })
 
             $(`#toasty`).hide();
-            openToasty('Hello!', 'This is a testing app. Do NOT use with Production data!');
 
             $(`#network-container`).html(networkComponent.createNew({ containerUUID: 'default' }));
 
@@ -139,7 +138,7 @@
                 setTimeout(() => {
                     $('#feedbackButton').popover('hide');
                 }, 4000)
-            }, 4000)
+            }, 1000)
 
         });
     </script>
@@ -156,7 +155,7 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <a href="#" id="feedbackButton" data-toggle="popover" data-placement="bottom" title="Feedback"
-                    data-content="If you find this project useful please star it on GitHub!"></a>
+                    data-content="If you like the app, GitHub Star!"></a>
             </div>
             <div class="col-sm-5">
                 <ul class="nav navbar-nav justify-content-center pt-20">
