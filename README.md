@@ -12,6 +12,9 @@ Click for the full version
 
 [![psbt-test-vector-30-seconds](https://user-images.githubusercontent.com/2951406/103563117-e0fa7900-4ec4-11eb-979f-d09013df5283.gif)](https://youtu.be/I4o5b9IhWEA)
 
+### Annotations
+ * Share and document [Transactions with Annotations](https://github.com/bitcoincoretech/bitcoinjs-ui/wiki/Annotations)
+
 ### Some examples of how it can be used
 
 * [PSBT UI](https://github.com/bitcoincoretech/bitcoinjs-ui/wiki/PSBT-Tests)
