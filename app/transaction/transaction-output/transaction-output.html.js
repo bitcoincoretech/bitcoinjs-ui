@@ -16,6 +16,17 @@ transactionOutputComponent.createNew = function createNew(op) {
                         </tr>
                     </thead>
                     <tbody id="output-entry-data-${op.outputUUID}">
+                        <tr id="output-note-row-${op.outputUUID}" class="d-none">
+                            <td class="col-sm-12">
+                                <div class="alert alert-warning alert-dismissible fade show mb-0"> 
+                                    <span id="output-note-${op.outputUUID}" ></span>
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+
                         <tr class="d-flex">
                             <td class="col-sm-2">
                                 <label>Value (sats)</label>
@@ -117,7 +128,7 @@ transactionOutputComponent.createNew = function createNew(op) {
         `;
 }
 
-transactionOutputComponent.dataToHtml = function dataToHtml(outputUUID, output) {
+transactionOutputComponent.dataToHtml = function dataToHtml(outputUUID, output, annot = {}) {
     if (!outputUUID || !output) {
         return;
     }
@@ -174,6 +185,16 @@ transactionOutputComponent.dataToHtml = function dataToHtml(outputUUID, output) 
     }
 
     $(`#public-keys-list-${outputUUID}`).val(JSON.stringify(output.publicKeysList || []));
+
+    if (annot.note) {
+        $(`#output-note-row-${outputUUID}`).removeClass('d-none').addClass('d-flex');
+        $(`#output-note-${outputUUID}`).text(annot.note);
+    }
+
+    if (annot.scriptNote) {
+        $(`#output-script-note-row-${outputUUID}`).removeClass('d-none').addClass('d-flex');
+        $(`#output-script-note-${outputUUID}`).text(annot.scriptNote);
+    }
 }
 
 transactionOutputComponent.htmlToData = function htmlToData(outputUUID) {

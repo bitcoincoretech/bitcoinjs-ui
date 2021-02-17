@@ -185,8 +185,8 @@ transactionComponent.dataToHtml = function dataToHtml(containerUUID, data) {
         transactionComponent.addTxInput(containerUUID, input, annot.inputs[index]);
     });
     $(`#outs-${containerUUID}`).empty();
-    (data.tx.outs || []).forEach((output) => {
-        transactionComponent.addTxOutput(containerUUID, output);
+    (data.tx.outs || []).forEach((output, index) => {
+        transactionComponent.addTxOutput(containerUUID, output, annot.outputs[index]);
     });
 
     if (annot.txNote) {

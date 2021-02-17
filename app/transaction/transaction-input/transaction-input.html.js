@@ -36,7 +36,7 @@ transactionInputComponent.createNew = function createNew(op) {
                                 </button>
                             </div>
                         </td>
-                    </td>
+                    </tr>
                     <tr class="d-flex input-row-${op.inputUUID}">
                         <td class="col-sm-2"><label>Previous TX ID</label></td>
                         <td class="col-sm-10">
