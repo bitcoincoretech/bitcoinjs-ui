@@ -2,8 +2,11 @@ transactionComponent.createNew = function createNew(op) {
     return `
 
     <div id="transaction-container-${op.containerUUID}">
-        <div id="txNote" class="alert alert-info d-none">
-            
+        <div id="tx-note-row-${op.containerUUID}" class="alert alert-warning d-none">
+            <span id="tx-note-${op.containerUUID}" ></span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
         </div>
         <table class="table table-sm border-bottom">
             <tbody>
@@ -190,8 +193,8 @@ transactionComponent.dataToHtml = function dataToHtml(containerUUID, data) {
     });
 
     if (annot.txNote) {
-        $(`#txNote`).text(annot.txNote);
-        $(`#txNote`).removeClass('d-none')
+        $(`#tx-note-row-${containerUUID}`).removeClass('d-none')
+        $(`#tx-note-${containerUUID}`).text(annot.txNote);
     }
 }
 
