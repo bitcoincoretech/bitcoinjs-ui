@@ -1,16 +1,21 @@
 function asmToHtml(chunks = []) {
     let indent = 0;
     return chunks.map(value => {
-        const labelType = value.startsWith('OP_') ? 'dark' : 'secondary';
-        if (value.toUpperCase() === 'OP_ELSE' || value.toUpperCase() === 'OP_ENDIF') {
-            indent--
+        try {
+            const labelType = value.startsWith('OP_') ? 'dark' : 'secondary';
+            if (value.toUpperCase() === 'OP_ELSE' || value.toUpperCase() === 'OP_ENDIF') {
+                indent--
+            }
+            const paddingRight = new Array(indent + 1).join('<span class="ml-4"></span>');
+            const badge = `${paddingRight}<span class="badge badge-${labelType} text-wrap text-left mr-4">${value}</span><br>`;
+            if (value.toUpperCase() === 'OP_IF' || value.toUpperCase() === 'OP_ELSE') {
+                indent++;
+            }
+            return badge;
+        } catch (err) {
+            console.error(err);
+            return `?${value}?`;
         }
-        const paddingRight = new Array(indent + 1).join('<span class="ml-4"></span>');
-        const badge = `${paddingRight}<span class="badge badge-${labelType} text-wrap text-left mr-4">${value}</span><br>`;
-        if (value.toUpperCase() === 'OP_IF' || value.toUpperCase() === 'OP_ELSE') {
-            indent++;
-        }
-        return badge;
     });
 }
 
