@@ -1,7 +1,13 @@
 transactionComponent.createNew = function createNew(op) {
     return `
-    <div id="transaction-container-${op.containerUUID}">
 
+    <div id="transaction-container-${op.containerUUID}">
+        <div id="tx-note-row-${op.containerUUID}" class="alert alert-warning d-none">
+            <span id="tx-note-${op.containerUUID}" ></span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
         <table class="table table-sm border-bottom">
             <tbody>
                 <tr class="d-flex">
@@ -167,6 +173,10 @@ transactionComponent.dataToHtml = function dataToHtml(containerUUID, data) {
     if (!data || !data.tx) {
         return;
     }
+    const annot = data.annot || {
+        inputs: [],
+        outputs: []
+    }
     $(`#id-${containerUUID}`).val(data.tx.getId ? data.tx.getId() : '');
     $(`#vsize-${containerUUID}`).val(data.tx.virtualSize ? data.tx.virtualSize() : 0);
     $(`#weight-${containerUUID}`).val(data.tx.weight ? data.tx.weight() : 0);
@@ -174,13 +184,18 @@ transactionComponent.dataToHtml = function dataToHtml(containerUUID, data) {
     $(`#locktime-${containerUUID}`).val(data.tx.locktime || 0);
     $(`#isCoinbase-${containerUUID}`).val((data.tx.isCoinbase && data.tx.isCoinbase()) ? 'Yes' : 'No');
     $(`#ins-${containerUUID}`).empty();
-    (data.tx.ins || []).forEach((input) => {
-        transactionComponent.addTxInput(containerUUID, input);
+    (data.tx.ins || []).forEach((input, index) => {
+        transactionComponent.addTxInput(containerUUID, input, annot.inputs[index]);
     });
     $(`#outs-${containerUUID}`).empty();
-    (data.tx.outs || []).forEach((output) => {
-        transactionComponent.addTxOutput(containerUUID, output);
+    (data.tx.outs || []).forEach((output, index) => {
+        transactionComponent.addTxOutput(containerUUID, output, annot.outputs[index]);
     });
+
+    if (annot.txNote) {
+        $(`#tx-note-row-${containerUUID}`).removeClass('d-none')
+        $(`#tx-note-${containerUUID}`).text(annot.txNote);
+    }
 }
 
 transactionComponent.setReadOnly = function setReadOnly(containerUUID, isReadOnly = false) {

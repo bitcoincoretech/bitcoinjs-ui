@@ -16,6 +16,17 @@ transactionOutputComponent.createNew = function createNew(op) {
                         </tr>
                     </thead>
                     <tbody id="output-entry-data-${op.outputUUID}">
+                        <tr id="output-note-row-${op.outputUUID}" class="d-none">
+                            <td class="col-sm-12">
+                                <div class="alert alert-warning alert-dismissible fade show mb-0"> 
+                                    <span id="output-note-${op.outputUUID}" ></span>
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+
                         <tr class="d-flex">
                             <td class="col-sm-2">
                                 <label>Value (sats)</label>
@@ -33,12 +44,22 @@ transactionOutputComponent.createNew = function createNew(op) {
                                     
                                 </div>
                             </td>
-                        </tr>
+                        </tr>                        
                         <tr class="d-flex">
                             <td class="col-sm-2">
                                 <label>Script</label>
                             </td>
                             <td class="col-sm-10">
+                                <div id="output-script-note-row-${op.outputUUID}" class="row d-none"> 
+                                    <div class="col-sm-12">
+                                        <div class="alert alert-warning alert-dismissible fade show"> 
+                                            <span id="output-script-note-${op.outputUUID}" ></span>
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="output-group">
                                     <table id="outs-script-container-${op.outputUUID}" class="table table-sm">
                                         <thead class="thead-light">
@@ -117,7 +138,7 @@ transactionOutputComponent.createNew = function createNew(op) {
         `;
 }
 
-transactionOutputComponent.dataToHtml = function dataToHtml(outputUUID, output) {
+transactionOutputComponent.dataToHtml = function dataToHtml(outputUUID, output, annot = {}) {
     if (!outputUUID || !output) {
         return;
     }
@@ -174,6 +195,16 @@ transactionOutputComponent.dataToHtml = function dataToHtml(outputUUID, output) 
     }
 
     $(`#public-keys-list-${outputUUID}`).val(JSON.stringify(output.publicKeysList || []));
+
+    if (annot.note) {
+        $(`#output-note-row-${outputUUID}`).removeClass('d-none').addClass('d-flex');
+        $(`#output-note-${outputUUID}`).text(annot.note);
+    }
+
+    if (annot.scriptNote) {
+        $(`#output-script-note-row-${outputUUID}`).removeClass('d-none').addClass('d-flex');
+        $(`#output-script-note-${outputUUID}`).text(annot.scriptNote);
+    }
 }
 
 transactionOutputComponent.htmlToData = function htmlToData(outputUUID) {

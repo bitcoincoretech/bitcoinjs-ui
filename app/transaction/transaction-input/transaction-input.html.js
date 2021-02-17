@@ -27,6 +27,16 @@ transactionInputComponent.createNew = function createNew(op) {
                     </tr>
                 </thead>
                 <tbody id="input-entry-data-${op.inputUUID}">
+                    <tr id="input-note-row-${op.inputUUID}" class="d-none">
+                        <td class="col-sm-12">
+                            <div class="alert alert-warning alert-dismissible fade show mb-0"> 
+                                <span id="input-note-${op.inputUUID}" ></span>
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
                     <tr class="d-flex input-row-${op.inputUUID}">
                         <td class="col-sm-2"><label>Previous TX ID</label></td>
                         <td class="col-sm-10">
@@ -138,11 +148,22 @@ transactionInputComponent.createNew = function createNew(op) {
                             </div>
                         </td>
                     </tr>
+
                     <tr class="d-flex input-row-${op.inputUUID}">
                         <td class="col-sm-2">
                             <label>Script</label>
                         </td>
                         <td class="col-sm-10">
+                            <div id="input-script-note-row-${op.inputUUID}" class="row d-none"> 
+                                <div class="col-sm-12">
+                                    <div class="alert alert-warning alert-dismissible fade show"> 
+                                        <span id="input-script-note-${op.inputUUID}" ></span>
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="row"> 
                                 <div class="col-sm-12">
                                     <span id="coinbase-data-${op.inputUUID}" class="badge badge-secondary d-none"></span>
@@ -234,7 +255,7 @@ transactionInputComponent.createNew = function createNew(op) {
         `;
 }
 
-transactionInputComponent.dataToHtml = function dataToHtml(inputUUID, inputData) {
+transactionInputComponent.dataToHtml = function dataToHtml(inputUUID, inputData, annot = {}) {
     if (!inputUUID || !inputData) {
         return;
     }
@@ -349,6 +370,16 @@ transactionInputComponent.dataToHtml = function dataToHtml(inputUUID, inputData)
 
     $(`#public-keys-list-${inputUUID}`).val(JSON.stringify(inputData.publicKeysList || []));
     $(`#signatures-list-${inputUUID}`).val(JSON.stringify(inputData.signaturesList || []));
+
+    if (annot.note) {
+        $(`#input-note-row-${inputUUID}`).removeClass('d-none').addClass('d-flex');
+        $(`#input-note-${inputUUID}`).text(annot.note);
+    }
+
+    if (annot.scriptNote) {
+        $(`#input-script-note-row-${inputUUID}`).removeClass('d-none').addClass('d-flex');
+        $(`#input-script-note-${inputUUID}`).text(annot.scriptNote);
+    }
 
     function _cleanPreviousTxValues(inputUUID) {
         $(`#set-previous-tx-${inputUUID}`).removeClass("d-none");

@@ -74,8 +74,11 @@
 
     <script>
         $(document).ready(function () {
+            $(function () {
+                $('[data-toggle="popover"]').popover()
+            })
+
             $(`#toasty`).hide();
-            openToasty('Hello!', 'This is a testing app. Do NOT use with Production data!');
 
             $(`#network-container`).html(networkComponent.createNew({ containerUUID: 'default' }));
 
@@ -102,6 +105,56 @@
             $(`#paymentCheckTabHeader`).click(function () {
                 $(`#bottom-menu`).html(paymentComponent.createExternalMenu({ containerUUID: paymentContainerUUID }));
             });
+
+
+
+            ////
+
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('tx_hex')) {
+                try {
+                    const annot = {
+                        txNote: urlParams.get('tx_note'),
+                        inputs: [],
+                        outputs: []
+                    };
+
+                    // lame
+                    let i = 0;
+                    urlParams.forEach(() => {
+                        annot.inputs[i] = annot.inputs[i] || {};
+                        if (urlParams.has(`tx_input_${i}_note`)) { 
+                            annot.inputs[i].note = urlParams.get(`tx_input_${i}_note`);
+                        }
+                        if (urlParams.has(`tx_input_${i}_script_note`)) {
+                            annot.inputs[i].scriptNote = urlParams.get(`tx_input_${i}_script_note`);
+                        }
+                        annot.outputs[i] = annot.outputs[i] || {};
+                        if (urlParams.has(`tx_output_${i}_note`)) { 
+                            annot.outputs[i].note = urlParams.get(`tx_output_${i}_note`);
+                        }
+                        if (urlParams.has(`tx_output_${i}_script_note`)) {
+                            annot.outputs[i].scriptNote = urlParams.get(`tx_output_${i}_script_note`);
+                        }
+                        i++;
+                    })
+
+                    const txHexValue = urlParams.get('tx_hex');
+                    transactionComponent.populateTransactionFromHex(transactionContainerUUID, txHexValue, annot);
+                    $(`#txMenuItem`).click();
+                } catch (err) {
+                    console.error(err);
+                    openToasty('Transaction From Hex', err.message, true);
+                }
+            }
+
+            setTimeout(() => {
+                $('#feedbackButton').popover('show');
+                setTimeout(() => {
+                    $('#feedbackButton').popover('hide');
+                }, 10000)
+            }, 1000)
+
         });
     </script>
 
@@ -111,11 +164,13 @@
     <nav class="navbar navbar-expand-md bg-dark navbar-dark sticky-top mb-3">
         <div class="row w-100">
             <div class="col-sm-3">
-                <a class="navbar-brand" href="https://github.com/bitcoincoretech/bitcoinjs-ui" target="_blank">Bitcoin JS UI <i
-                        class="fab fa-lg fa-github pl-3"></i></a>
+                <a class="navbar-brand" href="https://github.com/bitcoincoretech/bitcoinjs-ui" target="_blank">Bitcoin
+                    JS UI <i class="fab fa-lg fa-github pl-3"></i></a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+                <a href="#" id="feedbackButton" data-toggle="popover" data-placement="right" title="Like the App?"
+                    data-content="Give it a Star on GitHub!"></a>
             </div>
             <div class="col-sm-5">
                 <ul class="nav navbar-nav justify-content-center pt-20">
@@ -126,7 +181,7 @@
                         <a class="nav-link">|</a>
                     </li>
                     <li id="txDetailsTabHeader" class="nav-item">
-                        <a class="nav-link" data-toggle="tab" href="#txDetailsTab">Transaction</a>
+                        <a id="txMenuItem" class="nav-link" data-toggle="tab" href="#txDetailsTab">Transaction</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link">|</a>
@@ -137,11 +192,11 @@
                 </ul>
             </div>
             <div class="col-sm-2">
-                <button onclick="keyManagerComponent.openInDefaultModal()" type="button" class="btn btn-warning btn-sm float-right"
-                    data-toggle="modal" data-target="#modal-dialog">
-                    Keys 
+                <button onclick="keyManagerComponent.openInDefaultModal()" type="button"
+                    class="btn btn-warning btn-sm float-right" data-toggle="modal" data-target="#modal-dialog">
+                    Keys
                     <i class="fas fa-key"></i>
-                    <span id="default-keys-count"  class="badge badge-light mt-1 ml-1 mr-1">0</span>
+                    <span id="default-keys-count" class="badge badge-light mt-1 ml-1 mr-1">0</span>
                 </button>
             </div>
             <div class="col-sm-2">

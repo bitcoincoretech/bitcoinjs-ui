@@ -1,13 +1,13 @@
 const transactionComponent = function () {
 
-    function addTxInput(containerUUID, inputData) {
+    function addTxInput(containerUUID, inputData, annot) {
         const inputUUID = uuidv4();
         const inputHtml = transactionInputComponent.createNew({
             inputUUID
         });
         $(`#ins-${containerUUID}`).append(`<div id="tx-input-${inputUUID}" class="shadow mb-2 mt-2 mr-2">${inputHtml}</div>`);
         if (inputData) {
-            transactionInputComponent.dataToHtml(inputUUID, inputData);
+            transactionInputComponent.dataToHtml(inputUUID, inputData, annot);
         }
         transactionInputComponent.updateHeaderContainer(inputUUID, _buildInputHeader(containerUUID, inputUUID));
 
@@ -26,14 +26,14 @@ const transactionComponent = function () {
         $(`#label-count-ins-${containerUUID}`).text(inputs.length);
     }
 
-    function addTxOutput(containerUUID, outputData) {
+    function addTxOutput(containerUUID, outputData, annot) {
         const outputUUID = uuidv4();
         const outputHtml = transactionOutputComponent.createNew({
             outputUUID
         });
         $(`#outs-${containerUUID}`).append(`<div id="tx-output-${outputUUID}" class="shadow mb-2 mt-2 mr-2">${outputHtml}</div>`);
         if (outputData) {
-            transactionOutputComponent.dataToHtml(outputUUID, outputData);
+            transactionOutputComponent.dataToHtml(outputUUID, outputData, annot);
         }
         transactionOutputComponent.updateHeaderContainer(outputUUID, _buildOutputHeader(containerUUID, outputUUID));
 
@@ -75,18 +75,22 @@ const transactionComponent = function () {
             try {
                 // clean all fields first
                 const txHexValue = $('#txHexEdit').val();
-                const tx = txHexValue ? bitcoinjs.Transaction.fromHex(txHexValue) : null;
-                console.log('tx from hex:', tx);
-                if (tx) {
-                    transactionComponent.dataToHtml(containerUUID, {
-                        tx
-                    });
-                }
+                populateTransactionFromHex(containerUUID, txHexValue)
             } catch (err) {
                 console.error(err);
                 openToasty('Transaction From Hex', err.message, true);
             }
         });
+    }
+
+    function populateTransactionFromHex(containerUUID, txHexValue, annot) {
+        const tx = txHexValue ? bitcoinjs.Transaction.fromHex(txHexValue) : null;
+        if (tx) {
+            transactionComponent.dataToHtml(containerUUID, {
+                tx,
+                annot
+            });
+        }
     }
 
     function openTransactionToHexModal(containerUUID) {
@@ -173,6 +177,7 @@ const transactionComponent = function () {
         removeTxInput,
         addTxOutput,
         removeTxOutput,
+        populateTransactionFromHex,
         openTransactionFromHexModal,
         openTransactionToHexModal,
         clear,

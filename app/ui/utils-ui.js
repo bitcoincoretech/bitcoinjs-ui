@@ -1,7 +1,21 @@
 function asmToHtml(chunks = []) {
+    let indent = 0;
     return chunks.map(value => {
-        const labelType = value.startsWith('OP_') ? 'dark' : 'secondary';
-        return `<span class="badge badge-${labelType} text-wrap text-left mr-2">${value}</span><br>`;
+        try {
+            const labelType = value.startsWith('OP_') ? 'dark' : 'secondary';
+            if (value.toUpperCase() === 'OP_ELSE' || value.toUpperCase() === 'OP_ENDIF') {
+                indent--
+            }
+            const paddingRight = new Array(indent + 1).join('<span class="ml-4"></span>');
+            const badge = `${paddingRight}<span class="badge badge-${labelType} text-wrap text-left mr-4">${value}</span><br>`;
+            if (value.toUpperCase() === 'OP_IF' || value.toUpperCase() === 'OP_ELSE') {
+                indent++;
+            }
+            return badge;
+        } catch (err) {
+            console.error(err);
+            return `?${value}?`;
+        }
     });
 }
 
@@ -73,10 +87,10 @@ function reverseBuffer(buffer) {
     let j = buffer.length - 1;
     let tmp = 0;
     for (let i = 0; i < buffer.length / 2; i++) {
-      tmp = buffer[i];
-      buffer[i] = buffer[j];
-      buffer[j] = tmp;
-      j--;
+        tmp = buffer[i];
+        buffer[i] = buffer[j];
+        buffer[j] = tmp;
+        j--;
     }
     return buffer;
-  }
+}
