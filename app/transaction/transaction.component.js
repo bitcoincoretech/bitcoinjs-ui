@@ -84,7 +84,6 @@ const transactionComponent = function () {
     }
 
     function populateTransactionFromHex(containerUUID, txHexValue, annot) {
-        console.log('annot', annot)
         const tx = txHexValue ? bitcoinjs.Transaction.fromHex(txHexValue) : null;
         if (tx) {
             transactionComponent.dataToHtml(containerUUID, {
