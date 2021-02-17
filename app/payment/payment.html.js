@@ -189,7 +189,7 @@ paymentComponent.createNew = function createNew(op) {
                     </tr>
                     <tr id="input-${op.containerUUID}Row" class="d-flex ${op.containerUUID}Row">
                         <td class="col-sm-2">
-                            <label>Input</label>
+                            <label>Unlock Script</label>
                         </td>
                         <td class="col-sm-5">
                             <div class="input-group ">
@@ -232,7 +232,7 @@ paymentComponent.createNew = function createNew(op) {
                         </td>
                     </tr>
                     <tr id="output-${op.containerUUID}Row" class="d-flex ${op.containerUUID}Row">
-                        <td class="col-sm-2"><label>Output</label></td>
+                        <td class="col-sm-2"><label>Lock Script</label></td>
                         <td class="col-sm-5">
                             <div class="input-group ">
                                 <div class="input-group-prepend">
@@ -293,7 +293,7 @@ paymentComponent.createNew = function createNew(op) {
                                 </thead>
                                 <tbody>
                                     <tr id="redeem-input-${op.containerUUID}Row" class="d-flex">
-                                        <td class="col-sm-2"><label>Input</label></td>
+                                        <td class="col-sm-2"><label>Unlock Script</label></td>
                                         <td class="col-sm-5">
                                             <div class="input-group ">
                                                 <div class="input-group-prepend">
@@ -321,7 +321,7 @@ paymentComponent.createNew = function createNew(op) {
                                         
                                     </tr>
                                     <tr id="redeem-output-${op.containerUUID}Row" class="d-flex">
-                                        <td class="col-sm-2"><label>Output</label></td>
+                                        <td class="col-sm-2"><label>Lock Script</label></td>
                                         <td class="col-sm-5">
                                             <div class="input-group ">
                                                 <div class="input-group-prepend">
