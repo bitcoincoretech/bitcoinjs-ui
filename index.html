@@ -122,14 +122,19 @@
                     // lame
                     let i = 0;
                     urlParams.forEach(() => {
-                        // tx_input_0_note=xxxx
-                        if (urlParams.has(`tx_input_${i}_note`)) {
-                            annot.inputs[i] = annot.inputs[i] || {};
+                        annot.inputs[i] = annot.inputs[i] || {};
+                        if (urlParams.has(`tx_input_${i}_note`)) { 
                             annot.inputs[i].note = urlParams.get(`tx_input_${i}_note`);
                         }
                         if (urlParams.has(`tx_input_${i}_script_note`)) {
-                            annot.inputs[i] = annot.inputs[i] || {};
                             annot.inputs[i].scriptNote = urlParams.get(`tx_input_${i}_script_note`);
+                        }
+                        annot.outputs[i] = annot.outputs[i] || {};
+                        if (urlParams.has(`tx_output_${i}_note`)) { 
+                            annot.outputs[i].note = urlParams.get(`tx_output_${i}_note`);
+                        }
+                        if (urlParams.has(`tx_output_${i}_script_note`)) {
+                            annot.outputs[i].scriptNote = urlParams.get(`tx_output_${i}_script_note`);
                         }
                         i++;
                     })
@@ -142,11 +147,6 @@
                     openToasty('Transaction From Hex', err.message, true);
                 }
             }
-
-
-
-            console.log('tx_note: ', urlParams.getAll('')); // true
-
 
             setTimeout(() => {
                 $('#feedbackButton').popover('show');

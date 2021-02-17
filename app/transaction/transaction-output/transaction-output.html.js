@@ -44,12 +44,22 @@ transactionOutputComponent.createNew = function createNew(op) {
                                     
                                 </div>
                             </td>
-                        </tr>
+                        </tr>                        
                         <tr class="d-flex">
                             <td class="col-sm-2">
                                 <label>Script</label>
                             </td>
                             <td class="col-sm-10">
+                                <div id="output-script-note-row-${op.outputUUID}" class="row d-none"> 
+                                    <div class="col-sm-12">
+                                        <div class="alert alert-warning alert-dismissible fade show"> 
+                                            <span id="output-script-note-${op.outputUUID}" ></span>
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="output-group">
                                     <table id="outs-script-container-${op.outputUUID}" class="table table-sm">
                                         <thead class="thead-light">
